@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
-
+import axios from 'axios';
+ import { Usercreatecontext } from '../Context/usercontext';
 const Login = () => {
   const [useremail, setuseremail] = useState("");
   const [userpassword, setuserpassword] = useState("");
   const [username, setusername] = useState("");
   const [ishow, setishow] = useState(false);
   const [currentstate, setcurrentstate] = useState("Login");
-
+  const [saveuserInfo , setsaveuserInfo] = useState('');
+  const {backendurl} = useContext(Usercreatecontext);
   const handletologin = (e) => {
     e.preventDefault();
     console.log("Email:", useremail);
     console.log("Password:", userpassword);
     console.log("Username:", username);
     console.log("Mode:", currentstate);
+    console.log(backendurl);
   };
 
   return (
