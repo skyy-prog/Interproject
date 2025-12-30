@@ -2,25 +2,41 @@ import React, { useContext, useState } from 'react'
 import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 import axios from 'axios';
  import { Usercreatecontext } from '../Context/usercontext';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
-  const [useremail, setuseremail] = useState("");
-  const [userpassword, setuserpassword] = useState("");
+  const [email, setuseremail] = useState("");
+  const [password, setpassword] = useState("");
   const [username, setusername] = useState("");
   const [ishow, setishow] = useState(false);
   const [currentstate, setcurrentstate] = useState("Login");
   const [saveuserInfo , setsaveuserInfo] = useState('');
+  const navigate = useNavigate();
   const {backendurl} = useContext(Usercreatecontext);
-  const handletologin = (e) => {
+  const handletologin = async(e) => {
     e.preventDefault();
-    console.log("Email:", useremail);
-    console.log("Password:", userpassword);
-    console.log("Username:", username);
-    console.log("Mode:", currentstate);
-    console.log(backendurl);
+    console.log(backendurl)
+    if(currentstate === 'Login'){
+        console.log(email , password)
+        try {
+
+            const response = await axios.post(`${backendurl}/api/users/login`, {email , password});
+            console.log(response.data.message);
+            if(response.data.success){
+                setpassword("");
+                setuseremail("");
+                localStorage.setItem("token", response.data.token);
+                navigate('/DashboardUI')
+
+                console.log(localStorage.getItem("token"))
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
   };
 
   return (
-    <form className="min-h-screen flex items-center justify-center bg-gray-100">
+    <form     onSubmit={handletologin}  className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
 
         <h1 className="text-2xl font-bold text-center mb-6">
@@ -34,23 +50,26 @@ const Login = () => {
               value={username}
               onChange={(e) => setusername(e.target.value)}
               type="text"
+              required
               placeholder="Username"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
             />
           )}
 
           <input
-            value={useremail}
+            value={email}
             onChange={(e) => setuseremail(e.target.value)}
             type="email"
+            required
             placeholder="Email"
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
           />
 
           <div className="relative">
             <input
-              value={userpassword}
-              onChange={(e) => setuserpassword(e.target.value)}
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
+              required
               type={ishow ? "text" : "password"}
               placeholder="Password"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
@@ -78,8 +97,8 @@ const Login = () => {
         </button>
 
         <button
-          onClick={handletologin}
-          className="w-full mt-4 bg-black text-white py-2 rounded-lg hover:bg-gray-900"
+       
+          className="w-full mt-4 cursor-pointer bg-black text-white py-2 rounded-lg hover:bg-gray-900"
         >
           {currentstate === "Login" ? "Login" : "Signup"}
         </button>

@@ -8,6 +8,8 @@ const creatToken = (id)=>{
 }
 export const Login = async (req, res) => {
   try {
+        console.log("HEADERS:", req.headers["content-type"]);
+    console.log("BODY:", req.body);
     const { email, password } = req.body;
 
   
