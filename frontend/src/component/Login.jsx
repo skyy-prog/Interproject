@@ -1,59 +1,89 @@
 import React, { useState } from 'react'
-import { FaEye } from "react-icons/fa";
-import { FaRegEyeSlash } from "react-icons/fa";
+import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-    const [useremail , setuseremil] = useState("");
-    const [ishow , setishow] =useState(false);
-    const [userpassword , setuserpassword] = useState("");
-const handletologin =(e)=>{
-console.log(useremail)
-console.log(userpassword);
-e.preventDefault();
+  const [useremail, setuseremail] = useState("");
+  const [userpassword, setuserpassword] = useState("");
+  const [username, setusername] = useState("");
+  const [ishow, setishow] = useState(false);
+  const [currentstate, setcurrentstate] = useState("Login");
 
-}
+  const handletologin = (e) => {
+    e.preventDefault();
+    console.log("Email:", useremail);
+    console.log("Password:", userpassword);
+    console.log("Username:", username);
+    console.log("Mode:", currentstate);
+  };
+
   return (
-    <>
- <form   className="min-h-screen flex items-center justify-center">
-  <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm h-[50vh]">
-    
-    <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
-      Login
-    </h1>
+    <form className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
 
-    <div className="space-y-4">
-      <input
-      value={useremail}
-      onChange={(e)=>setuseremil(e.target.value)}
-        type="email"
-        placeholder="Email"
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-      />
+        <h1 className="text-2xl font-bold text-center mb-6">
+          {currentstate}
+        </h1>
 
-      <input
-      value={userpassword}
-      onChange={(e)=>setuserpassword(e.target.value)}
-        type= { ishow ? 'password' : 'text'}
-        placeholder="Password"
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-      />
-      <div className=' flex justify-center items-center'>
-        {ishow ? <FaEye className=' cursor-pointer' size={20} onClick={()=> setishow(!ishow)} />:<FaRegEyeSlash className=' cursor-pointer' size={20}  onClick={()=> setishow(!ishow)} />}
+        <div className="space-y-4">
+
+          {currentstate === "Signup" && (
+            <input
+              value={username}
+              onChange={(e) => setusername(e.target.value)}
+              type="text"
+              placeholder="Username"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
+            />
+          )}
+
+          <input
+            value={useremail}
+            onChange={(e) => setuseremail(e.target.value)}
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
+          />
+
+          <div className="relative">
+            <input
+              value={userpassword}
+              onChange={(e) => setuserpassword(e.target.value)}
+              type={ishow ? "text" : "password"}
+              placeholder="Password"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
+            />
+
+            <span
+              className="absolute right-3 top-3 cursor-pointer"
+              onClick={() => setishow(!ishow)}
+            >
+              {ishow ? <FaRegEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="w-full mt-4 text-sm text-gray-600 cursor-pointer"
+          onClick={() =>
+            setcurrentstate(currentstate === "Login" ? "Signup" : "Login")
+          }
+        >
+          {currentstate === "Login"
+            ? "Create an account?"
+            : "Already have an account?"}
+        </button>
+
+        <button
+          onClick={handletologin}
+          className="w-full mt-4 bg-black text-white py-2 rounded-lg hover:bg-gray-900"
+        >
+          {currentstate === "Login" ? "Login" : "Signup"}
+        </button>
+
       </div>
-    </div>
+    </form>
+  );
+};
 
-    <button
-      className="w-full mt-6 bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition duration-300"
-      onClick={handletologin}
-    >
-      Login
-    </button>
-
-  </div>
-</form>
-
-    </>
-  )
-}
-
-export default Login
+export default Login;
