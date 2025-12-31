@@ -3,15 +3,16 @@ import { FaEye, FaRegEyeSlash } from "react-icons/fa";
 import axios from 'axios';
  import { Usercreatecontext } from '../Context/usercontext';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 const Login = () => {
   const [email, setuseremail] = useState("");
   const [password, setpassword] = useState("");
-  const [username, setusername] = useState("");
+  const [name, setusername] = useState("");
   const [ishow, setishow] = useState(false);
   const [currentstate, setcurrentstate] = useState("Login");
   const [saveuserInfo , setsaveuserInfo] = useState('');
   const navigate = useNavigate();
-  const {backendurl} = useContext(Usercreatecontext);
+  const {backendurl , setoken} = useContext(Usercreatecontext);
   const handletologin = async(e) => {
     e.preventDefault();
     console.log(backendurl)
@@ -21,16 +22,26 @@ const Login = () => {
 
             const response = await axios.post(`${backendurl}/api/users/login`, {email , password});
             console.log(response.data.message);
-            if(response.data.success){
-                setpassword("");
-                setuseremail("");
-                localStorage.setItem("token", response.data.token);
-                navigate('/DashboardUI')
-
-                console.log(localStorage.getItem("token"))
-            }
+            if (response.data.success) {
+  localStorage.setItem("token", response.data.token);
+  setoken(response.data.token);   // 🔥 THIS LINE
+  navigate('/DashboardUI');
+  toast.success('Logged In');
+}
         } catch (error) {
             console.log(error)
+        }
+    }else if(currentstate === 'Signup'){
+        try {
+            const response = await axios.post(backendurl + '/api/users/register'  ,{name , email , password})
+             if(response.data.success){
+                localStorage.setItem("token", response.data.token);
+  setoken(response.data.token);   // 🔥 THIS LINE
+  navigate('/DashboardUI');
+  toast.success('Logged In');
+             }
+        } catch (error) {
+            console.log(error);
         }
     }
   };
@@ -47,7 +58,7 @@ const Login = () => {
 
           {currentstate === "Signup" && (
             <input
-              value={username}
+              value={name}
               onChange={(e) => setusername(e.target.value)}
               type="text"
               required
@@ -97,7 +108,7 @@ const Login = () => {
         </button>
 
         <button
-       
+        type='submit'
           className="w-full mt-4 cursor-pointer bg-black text-white py-2 rounded-lg hover:bg-gray-900"
         >
           {currentstate === "Login" ? "Login" : "Signup"}

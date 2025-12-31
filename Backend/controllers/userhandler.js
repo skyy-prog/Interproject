@@ -89,3 +89,12 @@ const hashedpassword = await bcrypt.hash(password , salting);
         res.json({success:false , message:'error errorr error'})
     }
 }
+
+// export const  getuserinfo = async(req,res)=>{
+//   try {
+//     const {id} = req.body;
+//     const userinfo = await 
+//   } catch (error) {
+    
+//   }
+// }
