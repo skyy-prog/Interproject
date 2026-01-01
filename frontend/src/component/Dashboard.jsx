@@ -5,8 +5,9 @@ import  { Usercreatecontext } from "../Context/usercontext";
 
 const DashboardUI = () => {
   const [open, setOpen] = useState(false);
-  const {token , setoken} = useContext(Usercreatecontext);
+  const {token , setoken ,  saveuserInfo} = useContext(Usercreatecontext);
   const [tasks , setaks] = useState('');
+  const [listofarrays , setlistofarrays] = useState([]);
 const handletologout = () => {
   const decision = window.confirm("Do you really want to log out?");
   if (decision) {
@@ -15,6 +16,13 @@ const handletologout = () => {
     navigate("/");        
   }
 };
+  const handletoaddthetask = (e)=>{
+    e.preventDefault();
+  console.log(tasks);
+  setaks('')
+  setlistofarrays((prev)=> [...prev , tasks])
+  console.log(listofarrays);
+}
 const navigate = useNavigate();
   useEffect(() => {
     if (!token) {
@@ -23,8 +31,6 @@ const navigate = useNavigate();
   }, [token, navigate]);
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex">
-
-      {/* Mobile Overlay */}
       {open && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
@@ -80,10 +86,10 @@ const navigate = useNavigate();
           <div className="flex items-center gap-3">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-medium text-gray-700">
-                Anant Prajapati
+                 { saveuserInfo?.username}
               </p>
               <p className="text-xs text-gray-500">
-                anant@email.com
+                { saveuserInfo?.email}
               </p>
             </div>
             <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white font-semibold">
@@ -94,17 +100,14 @@ const navigate = useNavigate();
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-          {["Total Tasks", "Completed", "Pending"].map((title, i) => (
+          
             <div
-              key={i}
               className="bg-white rounded-xl p-6 shadow hover:shadow-lg transition"
             >
-              <p className="text-sm text-gray-500">{title}</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">
-                {i === 0 ? 24 : i === 1 ? 15 : 9}
-              </p>
+              <p className="text-sm text-gray-500">Totals Tasks</p>
+              <p className="text-3xl font-bold text-gray-800 mt-2">{listofarrays.length}</p>
             </div>
-          ))}
+        
         </div>
 
         {/* Tasks */}
@@ -114,41 +117,50 @@ const navigate = useNavigate();
               Tasks
             </h2>
 
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="relative">
+               <form onSubmit={handletoaddthetask}  > 
+            <div className="flex flex-col w-full sm:flex-row gap-2">
+              <div className="relative w-full">
                 <Search
                   size={18}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
+                
                 <input
                   type="text"
-                  placeholder="Search tasks"
-                  className="pl-10 pr-4 py-2 border rounded-lg w-full sm:w-48 focus:ring-2 focus:ring-gray-800"
+                  required
+                  value={tasks}
+                  onChange={(e)=>setaks(e.target.value)}
+                  placeholder="lets start tasks"
+                  className="pl-10 pr-4 py-2 border w-full rounded-lg  sm:w-48 focus:ring-2 focus:ring-gray-800"
                 />
               </div>
 
-              <button className="flex items-center justify-center gap-1 bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800">
+              <button  type="submit"  className="flex  cursor-pointer items-center justify-center gap-1 bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800">
                 <Plus size={18} /> Add
               </button>
+              
             </div>
+             </form>
           </div>
 
-          <div className="space-y-3">
-            
-                <div
-                  className="flex justify-between items-center border rounded-lg p-4 hover:bg-gray-50 transition"
+         
+            {listofarrays.map((items , index)=>{
+              return    <div key={index} className="space-y-3 flex justify-around flex-col   p-3 "> <div
+                  className="flex justify-between items-center border   rounded-lg p-4 hover:bg-gray-50 transition"
                 >
-                  <div className="flex items-center gap-3">
+
+                  <div className="flex items-center gap-4 justify-around">
                     <input type="checkbox" />
-                    <p></p>
+                    <p>{items}</p>
                   </div>
                   <span className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-600">
                     Pending
                   </span>
                 </div>
-              
-            
-          </div>
+  </div>
+            })}
+                
+         
         </div>
       </main>
     </div>

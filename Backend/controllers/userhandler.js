@@ -83,18 +83,42 @@ const hashedpassword = await bcrypt.hash(password , salting);
     password:hashedpassword
  });
  const user = await Newuser.save();
+ const userId = user._id;
  const token = creatToken(user._id);
- res.json({success:true , message : 'Registared successfully' , token })
+ res.json({success:true , message : 'Registared successfully' , token  , userId})
     } catch (error) {
         res.json({success:false , message:'error errorr error'})
     }
 }
 
-// export const  getuserinfo = async(req,res)=>{
-//   try {
-//     const {id} = req.body;
-//     const userinfo = await 
-//   } catch (error) {
-    
-//   }
-// }
+export const fetchusersinfo = async(req,res)=>{
+  try {
+    const {id} = req.body;
+   const finduser =  await User.findById(id);
+   if(finduser){
+     res.json({success:true, finduser})
+   }else{
+     res.json({success:false, message:'user does not axists'})
+
+   }
+  } catch (error) {
+     res.json({success:false, message:'user does not axists'})
+  }
+}
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ success: false });
+    }
+
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+};

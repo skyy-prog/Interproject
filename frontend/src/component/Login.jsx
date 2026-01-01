@@ -10,23 +10,29 @@ const Login = () => {
   const [name, setusername] = useState("");
   const [ishow, setishow] = useState(false);
   const [currentstate, setcurrentstate] = useState("Login");
-  const [saveuserInfo , setsaveuserInfo] = useState('');
   const navigate = useNavigate();
-  const {backendurl , setoken} = useContext(Usercreatecontext);
+  const {backendurl , setoken , setsaveuserInfo} = useContext(Usercreatecontext);
   const handletologin = async(e) => {
     e.preventDefault();
     console.log(backendurl)
     if(currentstate === 'Login'){
         console.log(email , password)
         try {
-
             const response = await axios.post(`${backendurl}/api/users/login`, {email , password});
-            console.log(response.data.message);
             if (response.data.success) {
   localStorage.setItem("token", response.data.token);
-  setoken(response.data.token);   // 🔥 THIS LINE
+  setoken(response.data.token);   
   navigate('/DashboardUI');
   toast.success('Logged In');
+  const id = response.data.user.id;
+  const response2 = await axios.post(backendurl+'/api/users/infofuser' , {id});
+  if(response2.data.success){
+    const user = response2.data.finduser;
+setsaveuserInfo(user)
+  }else{
+    console.log('got some eror');
+    console.log(response2)
+  }
 }
         } catch (error) {
             console.log(error)
@@ -36,9 +42,10 @@ const Login = () => {
             const response = await axios.post(backendurl + '/api/users/register'  ,{name , email , password})
              if(response.data.success){
                 localStorage.setItem("token", response.data.token);
-  setoken(response.data.token);   // 🔥 THIS LINE
+  setoken(response.data.token);    
   navigate('/DashboardUI');
   toast.success('Logged In');
+  console.log(response.data.userId)
              }
         } catch (error) {
             console.log(error);
