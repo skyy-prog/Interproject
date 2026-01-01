@@ -3,6 +3,7 @@ import { LogOut, Plus, Search, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Usercreatecontext } from "../Context/usercontext";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const DashboardUI = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const DashboardUI = () => {
       localStorage.removeItem("token");
       setoken(null);
       navigate("/");
+      toast.success('Log Out')
     }
   };
 
@@ -48,6 +50,7 @@ const DashboardUI = () => {
 
       if (res.data.success) {
         setlistofarrays(res.data.tasks);
+         
       }
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -69,6 +72,7 @@ const DashboardUI = () => {
       if (res.data.success) {
         setlistofarrays((prev) => [...prev, res.data.task]);
         setaks("");
+        toast.success('New Task Added');
       }
     } catch (error) {
       console.error("Error adding task:", error);
@@ -87,6 +91,7 @@ const DashboardUI = () => {
         setlistofarrays((prev) =>
           prev.map((t) => (t._id === id ? res.data.task : t))
         );
+        toast.success('Task Updated');
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -98,11 +103,15 @@ const DashboardUI = () => {
     setlistofarrays((prev) => prev.filter((item) => item._id !== id));
     
     try {
-      await axios.post(
+  const deletedtaks=     await axios.post(
         `${backendurl}/api/tasks/delete`,
         { id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      if(deletedtaks.data.success){
+
+        toast.success('Task Deleted');
+      }
     } catch (error) {
       console.error("Error deleting task:", error);
       setlistofarrays(originalTasks);

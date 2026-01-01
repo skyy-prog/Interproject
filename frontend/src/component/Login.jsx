@@ -31,11 +31,13 @@ const Login = () => {
 setsaveuserInfo(user)
   }else{
     console.log('got some eror');
-    console.log(response2)
+    console.log(response.response.data.message);
+    toast.error(response.data.message)
   }
 }
         } catch (error) {
-            console.log(error)
+             console.log(error.response.data.message);
+             toast.error(error.response.data.message);
         }
     }else if(currentstate === 'Signup'){
         try {
@@ -44,8 +46,10 @@ setsaveuserInfo(user)
                 localStorage.setItem("token", response.data.token);
   setoken(response.data.token);    
   navigate('/DashboardUI');
-  toast.success('Logged In');
+  toast.success('Signed Up');
   console.log(response.data.userId)
+             }else{
+              toast.error(response.data.message)
              }
         } catch (error) {
             console.log(error);
