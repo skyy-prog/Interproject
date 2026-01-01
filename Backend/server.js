@@ -3,12 +3,14 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import router from "./routes/userrouters.js";
 import cors from 'cors'
+import taskrouter from "./routes/Tasksroutes.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json()); 
 app.use(cors());
 app.use('/api/users' , router);
+app.use('/api/tasks' , taskrouter)
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
